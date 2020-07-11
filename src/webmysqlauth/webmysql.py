@@ -32,7 +32,7 @@ class WebMysql(object):
             cnx = mysql.connector.connect(host=self.__host, user=self.__user, password=self.__password,
                                           database=self.__database)
             self.__connection = cnx
-            self.__session = cnx.cursor()
+            self.__session = cnx.cursor(buffered=True)
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
                 print 'Something is wrong with your user name or password'
@@ -63,22 +63,26 @@ class WebMysql(object):
 
     def select(self, table, where=None, *args):
         result = None
-        # query = "SELECT "
-        # keys = args
-        # l = len(keys) - 1
-        # for i, key in enumerate(keys):
-        #     query += "`"+key+"`"
-        #     if i < l:
-        #         query += ","
-        # query += " FROM %s" % table
-        query =  "SELECT `" + "`,`".join(keys) + "` FROM " + table
+        query = "SELECT "
+        keys = args
+        l = len(keys) - 1
+        for i, key in enumerate(keys):
+            query += "`"+key+"`"
+            if i < l:
+                query += ","
+        query += " FROM %s" % table
+        #query =  "SELECT `" + "`,`".join(keys) + "` FROM " + table
         if where:
-            query += " WHERE %" % where
+            query += " WHERE %s" % where
+        print(query)
         self._open()
         self.__session.execute(query)
         self.__connection.commit()
-        for result in self.__session.stored_results():
-            result = result.fetchall()
+        if self.__session.rowcount != 0 :
+            result = self.__session.fetchall()
+            # for result in self.__session.stored_results():
+            #     result = result.fetchall()
+            
         self._close()
         return result
 

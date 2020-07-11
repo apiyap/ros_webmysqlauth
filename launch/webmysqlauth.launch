@@ -2,11 +2,18 @@
   
   <!-- Output: screen, log -->
   <arg name="output" default="screen" />
-  
+  <arg name="hostname" default="localhost" />
+  <arg name="username" default="test_user" />
+  <arg name="password" default="test_user1234" />
+  <arg name="database" default="test_user" />
+  <arg name="tablename" default="users" />
 
-  
-  <node name="ros_webmysqlauth" pkg="webmysqlauth" type="webmysqlauth" output="$(arg output)">
-
+  <node name="ros_webmysqlauth" pkg="ros_webmysqlauth" type="webmysqlauth" output="$(arg output)">
+      <param name="hostname" value="$(arg hostname)" />
+      <param name="username" value="$(arg username)" />
+      <param name="password" value="$(arg password)" />
+      <param name="database" value="$(arg database)" />
+      <param name="tablename" value="$(arg tablename)" />
   </node>
 
 </launch>
