@@ -10,22 +10,22 @@ db = None
 tablename = ''
 def authenticate(req):
 
-    print("Request [mac:%s , client:%s , dest:%s, rand:%s, t:%s, level:%s, end:%s]"%(req.mac, req.client, req.dest, req.rand, req.t, req.level , req.end  ))
+    rospy.loginfo("Request [mac:%s , client:%s , dest:%s, rand:%s, t:%s, level:%s, end:%s]"%(req.mac, req.client, req.dest, req.rand, req.t, req.level , req.end  ))
     authenticated = False
     if db is None:
-        print("authenticated result=%s"%( authenticated ))
+        rospy.loginfo("authenticated result=%s"%( authenticated ))
         return AuthenticationResponse(authenticated)
 
     try:
         result = db.select(tablename, "name = '" + req.client +"' " ,'id','name')
-        print(result)
+        rospy.loginfo(result)
         if result is not None:
             authenticated = True
 
     except Exception, e:
-        print("Error:%s"%( str(e) ))
+        rospy.logerr("Error:%s"%( str(e) ))
     
-    print("authenticated result=%s"%( authenticated ))
+    rospy.loginfo("authenticated result=%s"%( authenticated ))
     return AuthenticationResponse(authenticated)
  
 
@@ -44,12 +44,12 @@ if __name__ == '__main__':
     tablename = rospy.get_param('~tablename', 'users')
 
     db =  WebMysql(host=hostname, user=username, password=password, database=database)
-    print("hostname=%s"%( hostname ))
-    print("username=%s"%( username ))
-    print("password=%s"%( password ))
-    print("database=%s"%( database ))
-    print("tablename=%s"%( tablename ))
+    rospy.loginfo("hostname=%s"%( hostname ))
+    rospy.loginfo("username=%s"%( username ))
+    rospy.loginfo("password=%s"%( password ))
+    rospy.loginfo("database=%s"%( database ))
+    rospy.loginfo("tablename=%s"%( tablename ))
 
     s = rospy.Service('authenticate',Authentication, authenticate)
-    print("ROS Web mysql Authentication Server Started")
+    rospy.loginfo("ROS Web mysql Authentication Server Started")
     rospy.spin()
