@@ -1,0 +1,12 @@
+<launch>  
+  
+  <!-- Output: screen, log -->
+  <arg name="output" default="screen" />
+  
+
+  
+  <node name="ros_webmysqlauth" pkg="webmysqlauth" type="webmysqlauth" output="$(arg output)">
+
+  </node>
+
+</launch>
